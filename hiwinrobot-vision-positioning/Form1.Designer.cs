@@ -33,6 +33,7 @@ namespace hiwinrobot_vision_positioning
             this.buttonConnect = new System.Windows.Forms.Button();
             this.buttonDisconnect = new System.Windows.Forms.Button();
             this.buttonHoming = new System.Windows.Forms.Button();
+            this.buttonStart = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMain)).BeginInit();
             this.SuspendLayout();
             // 
@@ -66,7 +67,7 @@ namespace hiwinrobot_vision_positioning
             // 
             // buttonHoming
             // 
-            this.buttonHoming.Location = new System.Drawing.Point(1074, 286);
+            this.buttonHoming.Location = new System.Drawing.Point(1074, 293);
             this.buttonHoming.Name = "buttonHoming";
             this.buttonHoming.Size = new System.Drawing.Size(164, 67);
             this.buttonHoming.TabIndex = 1;
@@ -74,11 +75,22 @@ namespace hiwinrobot_vision_positioning
             this.buttonHoming.UseVisualStyleBackColor = true;
             this.buttonHoming.Click += new System.EventHandler(this.buttonHoming_Click);
             // 
+            // buttonStart
+            // 
+            this.buttonStart.Location = new System.Drawing.Point(1074, 411);
+            this.buttonStart.Name = "buttonStart";
+            this.buttonStart.Size = new System.Drawing.Size(164, 67);
+            this.buttonStart.TabIndex = 2;
+            this.buttonStart.Text = "Start";
+            this.buttonStart.UseVisualStyleBackColor = true;
+            this.buttonStart.Click += new System.EventHandler(this.buttonStart_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1414, 1017);
+            this.Controls.Add(this.buttonStart);
             this.Controls.Add(this.buttonHoming);
             this.Controls.Add(this.buttonDisconnect);
             this.Controls.Add(this.buttonConnect);
@@ -96,6 +108,7 @@ namespace hiwinrobot_vision_positioning
         private System.Windows.Forms.Button buttonConnect;
         private System.Windows.Forms.Button buttonDisconnect;
         private System.Windows.Forms.Button buttonHoming;
+        private System.Windows.Forms.Button buttonStart;
     }
 }
 

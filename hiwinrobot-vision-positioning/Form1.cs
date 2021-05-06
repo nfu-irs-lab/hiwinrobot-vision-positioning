@@ -45,5 +45,8 @@ namespace hiwinrobot_vision_positioning
         {
             Arm.Do(new Homing());
         }
+
+        private void buttonStart_Click(object sender, EventArgs e)
+        { }
     }
 }
