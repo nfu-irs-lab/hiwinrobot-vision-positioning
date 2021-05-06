@@ -18,5 +18,20 @@ namespace hiwinrobot_vision_positioning
         {
             InitializeComponent();
         }
+
+        private void buttonConnect_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonDisconnect_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonHoming_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
