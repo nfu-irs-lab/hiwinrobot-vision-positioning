@@ -18,14 +18,15 @@ namespace hiwinrobot_vision_positioning
         private IMessage Message;
         private IArmController Arm;
         private IDSCamera Camera;
-        
+
         public Form1()
         {
             InitializeComponent();
-            
+
             Message = new NormalMessage(new LogHandler());
             Arm = new ArmController(ArmIp, Message);
             Camera = new IDSCamera(Message);
+            Camera.Init();
         }
 
         private void buttonConnect_Click(object sender, EventArgs e)
