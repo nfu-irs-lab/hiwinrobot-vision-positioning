@@ -14,6 +14,7 @@ namespace hiwinrobot_vision_positioning
 {
     public partial class Form1 : Form
     {
+        private readonly string ArmIp = "192.168.0.3";
         private IMessage Message;
         private IArmController Arm;
         private IDSCamera Camera;
@@ -23,7 +24,7 @@ namespace hiwinrobot_vision_positioning
             InitializeComponent();
             
             Message = new NormalMessage(new LogHandler());
-            Arm = new ArmController("192.168.0.3", Message);
+            Arm = new ArmController(ArmIp, Message);
             Camera = new IDSCamera(Message);
         }
 
