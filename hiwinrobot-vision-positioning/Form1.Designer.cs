@@ -77,6 +77,7 @@ namespace hiwinrobot_vision_positioning
             // 
             // buttonStart
             // 
+            this.buttonStart.Enabled = false;
             this.buttonStart.Location = new System.Drawing.Point(1074, 411);
             this.buttonStart.Name = "buttonStart";
             this.buttonStart.Size = new System.Drawing.Size(164, 67);

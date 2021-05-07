@@ -33,12 +33,16 @@ namespace hiwinrobot_vision_positioning
         {
             Arm.Connect();
             Camera.Open();
+
+            buttonStart.Enabled = true;
         }
 
         private void buttonDisconnect_Click(object sender, EventArgs e)
         {
             Arm.Disconnect();
             Camera.Exit();
+
+            buttonStart.Enabled = false;
         }
 
         private void buttonHoming_Click(object sender, EventArgs e)
