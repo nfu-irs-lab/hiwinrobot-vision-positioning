@@ -33,6 +33,8 @@ namespace hiwinrobot_vision_positioning
             Camera.Init();
         }
 
+        #region Button
+
         private void buttonConnect_Click(object sender, EventArgs e)
         {
             Arm.Connect();
@@ -56,5 +58,7 @@ namespace hiwinrobot_vision_positioning
 
         private void buttonStart_Click(object sender, EventArgs e)
         { }
+
+        #endregion
     }
 }
