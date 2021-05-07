@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NFUIRSL.HRTK;
@@ -97,6 +98,53 @@ namespace hiwinrobot_vision_positioning
                       csvData,
                       new List<string> { "id", "corner_1", "corner_2", "corner_3", "corner_4" });
         }
+
+        private void ArmMove(int targetArucoId, float allowableError)
+        {
+            // Target point is the center point of image.
+            var targetPoint = new PointF(_aoi.Width / 2, _aoi.Height / 2);
+            var nowPoint = new PointF();
+            double errorX;
+            double errorY;
+
+            do
+            {
+                // Get point.
+                GetCornersOfAruco(out var ids, out var corners);
+                var targetIndex = 0;
+                for (int i = 0; i < ids.Length; i++)
+                {
+                    if (ids[i] == targetArucoId)
+                    {
+                        targetIndex = i;
+                        break;
+                    }
+                }
+                nowPoint = corners[targetIndex][0];
+
+                // X.
+                errorX = targetPoint.X - nowPoint.X;
+                var armOffsetX = 0.0;
+                if (errorX > 0)
+                    armOffsetX = 5;
+                else if (errorX < 0)
+                    armOffsetX = -5;
+
+                // Y.
+                errorY = targetPoint.Y - nowPoint.Y;
+                var armOffsetY = 0.0;
+                if (errorY > 0)
+                    armOffsetY = 5;
+                else if (errorY < 0)
+                    armOffsetY = -5;
+
+                Arm.Do(new RelativeMotion(armOffsetX, armOffsetY, 0));
+                Thread.Sleep(500);
+            }
+            while (Math.Abs(errorX) > allowableError ||
+                   Math.Abs(errorY) > allowableError);
+        }
+
 
         #region Button
 
