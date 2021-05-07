@@ -12,6 +12,7 @@ using NFUIRSL.HRTK.Vision;
 using Emgu.CV;
 using Emgu.CV.Aruco;
 using Emgu.CV.CvEnum;
+using Emgu.CV.Structure;
 using Emgu.CV.Util;
 
 namespace hiwinrobot_vision_positioning
@@ -23,6 +24,22 @@ namespace hiwinrobot_vision_positioning
         private IArmController Arm;
         private IDSCamera Camera;
 
+        private DetectorParameters _detectorParameters;
+
+        private Dictionary _dict;
+
+        private Dictionary ArucoDictionary
+        {
+            get
+            {
+                if (_dict == null)
+                {
+                    _dict = new Dictionary(Dictionary.PredefinedDictionaryName.Dict4X4_100);
+                }
+                return _dict;
+            }
+        }
+
         public Form1()
         {
             InitializeComponent();
@@ -31,6 +48,25 @@ namespace hiwinrobot_vision_positioning
             Arm = new ArmController(ArmIp, Message);
             Camera = new IDSCamera(Message);
             Camera.Init();
+        }
+
+        private void GetCornersOfAruco()
+        {
+            var frame = Camera.GetImage().ToMat();
+
+            using (var ids = new VectorOfInt())
+            using (var corners = new VectorOfVectorOfPointF())
+            using (var rejected = new VectorOfVectorOfPointF())
+            {
+                ArucoInvoke.DetectMarkers(frame, ArucoDictionary, corners, ids, _detectorParameters, rejected);
+
+                if (ids.Size > 0)
+                {
+                    ArucoInvoke.DrawDetectedDiamonds(frame, corners, ids, new MCvScalar(0, 255, 0));
+                }
+
+                pictureBoxMain.Image = frame.Clone().ToBitmap();
+            }
         }
 
         #region Button
@@ -57,7 +93,9 @@ namespace hiwinrobot_vision_positioning
         }
 
         private void buttonStart_Click(object sender, EventArgs e)
-        { }
+        {
+            GetCornersOfAruco();
+        }
 
         #endregion
     }
