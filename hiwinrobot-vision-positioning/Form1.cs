@@ -53,7 +53,7 @@ namespace hiwinrobot_vision_positioning
             Camera.Init();
         }
 
-        private void GetCornersOfAruco()
+        private void GetCornersOfAruco(out VectorOfInt idsOut, out VectorOfVectorOfPointF cornersOut)
         {
             var frame = new Mat(Camera.GetImage().ToMat(), _aoi);
 
@@ -69,7 +69,30 @@ namespace hiwinrobot_vision_positioning
                 }
 
                 pictureBoxMain.Image = frame.Clone().ToBitmap();
+                idsOut = ids;
+                cornersOut = corners;
             }
+        }
+
+        private void SaveArucoData(VectorOfInt ids, VectorOfVectorOfPointF corners)
+        {
+            var idsArray = ids.ToArray();
+            var cornersArray = corners.ToArrayOfArray();
+
+            var csvData = new List<List<string>>();
+            for (int row = 0; row < ids.Size; row++)
+            {
+                var csvDataRow = new List<string>
+                {
+                    idsArray[row].ToString(),
+                    cornersArray[row].ToString()
+                };
+
+                csvData.Add(csvDataRow);
+            }
+
+            var csv = new CsvHandler("");
+            csv.Write("aruco_data.csv", csvData);
         }
 
         #region Button
@@ -99,7 +122,8 @@ namespace hiwinrobot_vision_positioning
 
         private void buttonStart_Click(object sender, EventArgs e)
         {
-            GetCornersOfAruco();
+            GetCornersOfAruco(out var ids, out var corners);
+            SaveArucoData(ids, corners);
         }
 
         #endregion
