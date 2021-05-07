@@ -53,7 +53,7 @@ namespace hiwinrobot_vision_positioning
             Camera.Init();
         }
 
-        private void GetCornersOfAruco(out VectorOfInt idsOut, out VectorOfVectorOfPointF cornersOut)
+        private void GetCornersOfAruco(out int[] idsOut, out PointF[][] cornersOut)
         {
             var frame = new Mat(Camera.GetImage().ToMat(), _aoi);
 
@@ -69,30 +69,33 @@ namespace hiwinrobot_vision_positioning
                 }
 
                 pictureBoxMain.Image = frame.Clone().ToBitmap();
-                idsOut = ids;
-                cornersOut = corners;
+
+                idsOut = ids.ToArray();
+                cornersOut = corners.ToArrayOfArray();
             }
         }
 
-        private void SaveArucoData(VectorOfInt ids, VectorOfVectorOfPointF corners)
+        private void SaveArucoData(int[] ids, PointF[][] corners)
         {
-            var idsArray = ids.ToArray();
-            var cornersArray = corners.ToArrayOfArray();
-
             var csvData = new List<List<string>>();
-            for (int row = 0; row < ids.Size; row++)
+            for (int row = 0; row < ids.Length; row++)
             {
                 var csvDataRow = new List<string>
                 {
-                    idsArray[row].ToString(),
-                    cornersArray[row].ToString()
+                    ids[row].ToString(),
+                    corners[row][0].ToString(),
+                    corners[row][1].ToString(),
+                    corners[row][2].ToString(),
+                    corners[row][3].ToString()
                 };
 
                 csvData.Add(csvDataRow);
             }
 
             var csv = new CsvHandler("");
-            csv.Write("aruco_data.csv", csvData);
+            csv.Write("aruco_data.csv",
+                      csvData,
+                      new List<string> { "id", "corner_1", "corner_2", "corner_3", "corner_4" });
         }
 
         #region Button
