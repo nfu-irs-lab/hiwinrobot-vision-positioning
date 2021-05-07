@@ -78,6 +78,7 @@ namespace hiwinrobot_vision_positioning
             Camera.Open();
 
             buttonStart.Enabled = true;
+            buttonHoming.Enabled = true;
         }
 
         private void buttonDisconnect_Click(object sender, EventArgs e)
@@ -86,6 +87,7 @@ namespace hiwinrobot_vision_positioning
             Camera.Exit();
 
             buttonStart.Enabled = false;
+            buttonHoming.Enabled = false;
         }
 
         private void buttonHoming_Click(object sender, EventArgs e)
