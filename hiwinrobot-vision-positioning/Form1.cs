@@ -44,6 +44,7 @@ namespace hiwinrobot_vision_positioning
         {
             InitializeComponent();
 
+            _detectorParameters = DetectorParameters.GetDefault();
             Message = new NormalMessage(new LogHandler());
             Arm = new ArmController(ArmIp, Message);
             Camera = new IDSCamera(Message);
