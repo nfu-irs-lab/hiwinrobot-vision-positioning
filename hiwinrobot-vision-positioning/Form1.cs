@@ -69,6 +69,7 @@ namespace hiwinrobot_vision_positioning
                 }
 
                 pictureBoxMain.Image = frame.Clone().ToBitmap();
+
                 idsOut = ids.ToArray();
                 cornersOut = corners.ToArrayOfArray();
             }
