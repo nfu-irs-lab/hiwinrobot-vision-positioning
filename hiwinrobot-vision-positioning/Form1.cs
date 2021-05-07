@@ -175,6 +175,7 @@ namespace hiwinrobot_vision_positioning
         {
             GetCornersOfAruco(out var ids, out var corners);
             SaveArucoData(ids, corners);
+            ArmMove(0, 10);
         }
 
         #endregion
