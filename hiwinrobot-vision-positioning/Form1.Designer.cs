@@ -43,7 +43,7 @@ namespace hiwinrobot_vision_positioning
             // 
             this.pictureBoxMain.Location = new System.Drawing.Point(226, 12);
             this.pictureBoxMain.Name = "pictureBoxMain";
-            this.pictureBoxMain.Size = new System.Drawing.Size(1747, 1363);
+            this.pictureBoxMain.Size = new System.Drawing.Size(1344, 756);
             this.pictureBoxMain.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxMain.TabIndex = 0;
             this.pictureBoxMain.TabStop = false;
@@ -105,7 +105,7 @@ namespace hiwinrobot_vision_positioning
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1998, 1397);
+            this.ClientSize = new System.Drawing.Size(1651, 849);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.pictureBoxMain);
             this.Name = "Form1";
