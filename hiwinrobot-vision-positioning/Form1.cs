@@ -24,6 +24,8 @@ namespace hiwinrobot_vision_positioning
         private IArmController Arm;
         private IDSCamera Camera;
 
+        private readonly Rectangle _aoi = new Rectangle(500, 400, 1920, 1080);
+
         private DetectorParameters _detectorParameters;
 
         private Dictionary _dict;
@@ -44,6 +46,7 @@ namespace hiwinrobot_vision_positioning
         {
             InitializeComponent();
 
+            _detectorParameters = DetectorParameters.GetDefault();
             Message = new NormalMessage(new LogHandler());
             Arm = new ArmController(ArmIp, Message);
             Camera = new IDSCamera(Message);
@@ -52,7 +55,7 @@ namespace hiwinrobot_vision_positioning
 
         private void GetCornersOfAruco()
         {
-            var frame = Camera.GetImage().ToMat();
+            var frame = new Mat(Camera.GetImage().ToMat(), _aoi);
 
             using (var ids = new VectorOfInt())
             using (var corners = new VectorOfVectorOfPointF())
@@ -77,6 +80,7 @@ namespace hiwinrobot_vision_positioning
             Camera.Open();
 
             buttonStart.Enabled = true;
+            buttonHoming.Enabled = true;
         }
 
         private void buttonDisconnect_Click(object sender, EventArgs e)
@@ -85,6 +89,7 @@ namespace hiwinrobot_vision_positioning
             Camera.Exit();
 
             buttonStart.Enabled = false;
+            buttonHoming.Enabled = false;
         }
 
         private void buttonHoming_Click(object sender, EventArgs e)
