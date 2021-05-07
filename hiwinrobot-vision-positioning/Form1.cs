@@ -24,6 +24,8 @@ namespace hiwinrobot_vision_positioning
         private IArmController Arm;
         private IDSCamera Camera;
 
+        private readonly Rectangle _aoi = new Rectangle(500, 400, 1920, 1080);
+
         private DetectorParameters _detectorParameters;
 
         private Dictionary _dict;
@@ -53,7 +55,7 @@ namespace hiwinrobot_vision_positioning
 
         private void GetCornersOfAruco()
         {
-            var frame = Camera.GetImage().ToMat();
+            var frame = new Mat(Camera.GetImage().ToMat(), _aoi);
 
             using (var ids = new VectorOfInt())
             using (var corners = new VectorOfVectorOfPointF())
