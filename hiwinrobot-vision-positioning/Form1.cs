@@ -9,6 +9,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using NFUIRSL.HRTK;
 using NFUIRSL.HRTK.Vision;
+using Emgu.CV;
+using Emgu.CV.Aruco;
+using Emgu.CV.CvEnum;
+using Emgu.CV.Util;
 
 namespace hiwinrobot_vision_positioning
 {
