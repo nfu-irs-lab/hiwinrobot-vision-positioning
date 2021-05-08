@@ -46,9 +46,11 @@ namespace hiwinrobot_vision_positioning
         private void ProcessFrame(object sender, EventArgs args)
         {
             var frame = GetImage();
-            GetInfoOfAruco(out var ids, out var corners, out var frameSize);
+
+            GetInfoOfAruco(frame, out var ids, out var corners);
             if (ids.Size > 0)
             {
+                var frameSize = frame.Size;
                 var centerOfFrame = new Point(frameSize.Width / 2, frameSize.Height / 2);
                 var error = new PointF(corners[0][0].X - centerOfFrame.X,
                                        corners[0][0].Y - centerOfFrame.Y);
@@ -58,10 +60,9 @@ namespace hiwinrobot_vision_positioning
                     ArmMove(CalArmOffset(error));
                     Thread.Sleep(10);
                 }
-
-                DrawArucoMarkers(ref frame, ids, corners);
             }
 
+            DrawArucoMarkers(ref frame, ids, corners);
             pictureBoxMain.Image = frame.Clone().ToBitmap();
         }
 
@@ -70,11 +71,8 @@ namespace hiwinrobot_vision_positioning
             return new Mat(_camera.GetImage().ToMat(), _aoi);
         }
 
-        private void GetInfoOfAruco(out VectorOfInt ids, out VectorOfVectorOfPointF corners, out Size frameSize)
+        private void GetInfoOfAruco(Mat frame, out VectorOfInt ids, out VectorOfVectorOfPointF corners)
         {
-            var frame = GetImage();
-            frameSize = frame.Size;
-
             var idsVector = new VectorOfInt();
             var cornersVector = new VectorOfVectorOfPointF();
             var rejectedVector = new VectorOfVectorOfPointF();
@@ -176,6 +174,7 @@ namespace hiwinrobot_vision_positioning
             _camera.Exit();
 
             buttonStart.Enabled = false;
+            buttonStop.Enabled = false;
             buttonHoming.Enabled = false;
             checkBoxEnableArm.Enabled = true;
         }
@@ -191,11 +190,15 @@ namespace hiwinrobot_vision_positioning
         private void buttonStart_Click(object sender, EventArgs e)
         {
             Application.Idle += ProcessFrame;
+            buttonStart.Enabled = false;
+            buttonStop.Enabled = true;
         }
 
         private void buttonStop_Click(object sender, EventArgs e)
         {
             Application.Idle -= ProcessFrame;
+            buttonStart.Enabled = true;
+            buttonStop.Enabled = false;
         }
 
         #endregion
