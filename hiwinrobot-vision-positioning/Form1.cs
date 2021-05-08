@@ -20,43 +20,31 @@ namespace hiwinrobot_vision_positioning
 {
     public partial class Form1 : Form
     {
-        private readonly string ArmIp = "192.168.0.3";
-        private IMessage Message;
-        private IArmController Arm;
-        private IDSCamera Camera;
-
+        private readonly string _armIp = "192.168.0.3";
+        private readonly IArmController _arm;
+        private readonly IDSCamera _camera;
         private readonly Rectangle _aoi = new Rectangle(500, 400, 1920, 1080);
-
-        private DetectorParameters _detectorParameters;
+        private readonly DetectorParameters _detectorParameters;
 
         private Dictionary _dict;
 
         private Dictionary ArucoDictionary
-        {
-            get
-            {
-                if (_dict == null)
-                {
-                    _dict = new Dictionary(Dictionary.PredefinedDictionaryName.Dict4X4_100);
-                }
-                return _dict;
-            }
-        }
+            => _dict ?? (_dict = new Dictionary(Dictionary.PredefinedDictionaryName.Dict4X4_100));
 
         public Form1()
         {
             InitializeComponent();
 
             _detectorParameters = DetectorParameters.GetDefault();
-            Message = new NormalMessage(new LogHandler());
-            Arm = new ArmController(ArmIp, Message);
-            Camera = new IDSCamera(Message);
-            Camera.Init();
+            IMessage message = new NormalMessage(new LogHandler());
+            _arm = new ArmController(_armIp, message);
+            _camera = new IDSCamera(message);
+            _camera.Init();
         }
 
         private void GetCornersOfAruco(out int[] idsOut, out PointF[][] cornersOut)
         {
-            var frame = new Mat(Camera.GetImage().ToMat(), _aoi);
+            var frame = new Mat(_camera.GetImage().ToMat(), _aoi);
 
             using (var ids = new VectorOfInt())
             using (var corners = new VectorOfVectorOfPointF())
@@ -138,13 +126,12 @@ namespace hiwinrobot_vision_positioning
                 else if (errorY < 0)
                     armOffsetY = -5;
 
-                Arm.Do(new RelativeMotion(armOffsetX, armOffsetY, 0));
+                _arm.Do(new RelativeMotion(armOffsetX, armOffsetY, 0));
                 Thread.Sleep(500);
             }
             while (Math.Abs(errorX) > allowableError ||
                    Math.Abs(errorY) > allowableError);
         }
-
 
         #region Button
 
@@ -152,11 +139,11 @@ namespace hiwinrobot_vision_positioning
         {
             if (checkBoxEnableArm.Checked)
             {
-                Arm.Connect();
+                _arm.Connect();
                 buttonHoming.Enabled = true;
             }
 
-            Camera.Open();
+            _camera.Open();
             buttonStart.Enabled = true;
             checkBoxEnableArm.Enabled = false;
         }
@@ -165,9 +152,9 @@ namespace hiwinrobot_vision_positioning
         {
             if (checkBoxEnableArm.Checked)
             {
-                Arm.Disconnect();
+                _arm.Disconnect();
             }
-            Camera.Exit();
+            _camera.Exit();
 
             buttonStart.Enabled = false;
             buttonHoming.Enabled = false;
@@ -178,7 +165,7 @@ namespace hiwinrobot_vision_positioning
         {
             if (checkBoxEnableArm.Checked)
             {
-                Arm.Do(new Homing());
+                _arm.Do(new Homing());
             }
         }
 
