@@ -20,59 +20,71 @@ namespace hiwinrobot_vision_positioning
 {
     public partial class Form1 : Form
     {
-        private readonly string ArmIp = "192.168.0.3";
-        private IMessage Message;
-        private IArmController Arm;
-        private IDSCamera Camera;
-
+        private readonly string _armIp = "192.168.0.3";
+        private readonly float _allowableError = 10;
+        private readonly IArmController _arm;
+        private readonly IDSCamera _camera;
         private readonly Rectangle _aoi = new Rectangle(500, 400, 1920, 1080);
-
-        private DetectorParameters _detectorParameters;
+        private readonly DetectorParameters _detectorParameters;
 
         private Dictionary _dict;
 
         private Dictionary ArucoDictionary
-        {
-            get
-            {
-                if (_dict == null)
-                {
-                    _dict = new Dictionary(Dictionary.PredefinedDictionaryName.Dict4X4_100);
-                }
-                return _dict;
-            }
-        }
+            => _dict ?? (_dict = new Dictionary(Dictionary.PredefinedDictionaryName.Dict4X4_100));
 
         public Form1()
         {
             InitializeComponent();
 
             _detectorParameters = DetectorParameters.GetDefault();
-            Message = new NormalMessage(new LogHandler());
-            Arm = new ArmController(ArmIp, Message);
-            Camera = new IDSCamera(Message);
-            Camera.Init();
+            IMessage message = new NormalMessage(new LogHandler());
+            _arm = new ArmController(_armIp, message);
+            _camera = new IDSCamera(message);
+            _camera.Init();
         }
 
-        private void GetCornersOfAruco(out int[] idsOut, out PointF[][] cornersOut)
+        private void ProcessFrame(object sender, EventArgs args)
         {
-            var frame = new Mat(Camera.GetImage().ToMat(), _aoi);
-
-            using (var ids = new VectorOfInt())
-            using (var corners = new VectorOfVectorOfPointF())
-            using (var rejected = new VectorOfVectorOfPointF())
+            var frame = GetImage();
+            GetInfoOfAruco(out var ids, out var corners, out var frameSize);
+            if (ids.Size > 0)
             {
-                ArucoInvoke.DetectMarkers(frame, ArucoDictionary, corners, ids, _detectorParameters, rejected);
+                DrawArucoMarkers(ref frame, ids, corners);
+            }
+            pictureBoxMain.Image = frame.Clone().ToBitmap();
+        }
 
-                if (ids.Size > 0)
-                {
-                    ArucoInvoke.DrawDetectedDiamonds(frame, corners, ids, new MCvScalar(0, 255, 0));
-                }
+        private Mat GetImage()
+        {
+            return new Mat(_camera.GetImage().ToMat(), _aoi);
+        }
 
-                pictureBoxMain.Image = frame.Clone().ToBitmap();
+        private void GetInfoOfAruco(out VectorOfInt ids, out VectorOfVectorOfPointF corners, out Size frameSize)
+        {
+            var frame = GetImage();
+            frameSize = frame.Size;
 
-                idsOut = ids.ToArray();
-                cornersOut = corners.ToArrayOfArray();
+            using (var idsVector = new VectorOfInt())
+            using (var cornersVector = new VectorOfVectorOfPointF())
+            using (var rejectedVector = new VectorOfVectorOfPointF())
+            {
+                ArucoInvoke.DetectMarkers(frame,
+                                          ArucoDictionary,
+                                          cornersVector,
+                                          idsVector,
+                                          _detectorParameters,
+                                          rejectedVector);
+
+                ids = idsVector;
+                corners = cornersVector;
+            }
+        }
+
+        private void DrawArucoMarkers(ref Mat frame, VectorOfInt ids, VectorOfVectorOfPointF corners)
+        {
+            if (ids.Size > 0)
+            {
+                ArucoInvoke.DrawDetectedMarkers(frame, corners, ids, new MCvScalar(0, 255, 0));
             }
         }
 
@@ -99,83 +111,107 @@ namespace hiwinrobot_vision_positioning
                       new List<string> { "id", "corner_1", "corner_2", "corner_3", "corner_4" });
         }
 
-        private void ArmMove(int targetArucoId, float allowableError)
+        private void AutoPositioning()
         {
-            // Target point is the center point of image.
-            var targetPoint = new PointF(_aoi.Width / 2, _aoi.Height / 2);
-            var nowPoint = new PointF();
-            double errorX;
-            double errorY;
-
-            do
+            var positionDone = false;
+            while (!positionDone)
             {
-                // Get point.
-                GetCornersOfAruco(out var ids, out var corners);
-                var targetIndex = 0;
-                for (int i = 0; i < ids.Length; i++)
+                GetInfoOfAruco(out var ids, out var corners, out var frameSize);
+                if (ids.Size > 0)
                 {
-                    if (ids[i] == targetArucoId)
+                    var centerOfFrame = new Point(frameSize.Width / 2, frameSize.Height / 2);
+                    var error = new PointF(corners[0][0].X - centerOfFrame.X,
+                                           corners[0][0].Y - centerOfFrame.Y);
+
+                    if (Math.Abs(error.X) < _allowableError && Math.Abs(error.Y) < _allowableError)
                     {
-                        targetIndex = i;
-                        break;
+                        positionDone = true;
+                    }
+                    else
+                    {
+                        ArmMove(CalArmOffset(error));
+                        Thread.Sleep(10);
                     }
                 }
-                nowPoint = corners[targetIndex][0];
-
-                // X.
-                errorX = targetPoint.X - nowPoint.X;
-                var armOffsetX = 0.0;
-                if (errorX > 0)
-                    armOffsetX = 5;
-                else if (errorX < 0)
-                    armOffsetX = -5;
-
-                // Y.
-                errorY = targetPoint.Y - nowPoint.Y;
-                var armOffsetY = 0.0;
-                if (errorY > 0)
-                    armOffsetY = 5;
-                else if (errorY < 0)
-                    armOffsetY = -5;
-
-                Arm.Do(new RelativeMotion(armOffsetX, armOffsetY, 0));
-                Thread.Sleep(500);
             }
-            while (Math.Abs(errorX) > allowableError ||
-                   Math.Abs(errorY) > allowableError);
         }
 
+        private void ArmMove(PointF value)
+        {
+            if (checkBoxEnableArm.Checked)
+            {
+                _arm.Do(new RelativeMotion(value.X, value.Y, 0));
+            }
+        }
+
+        private PointF CalArmOffset(PointF error)
+        {
+            PointF armOffset = default;
+
+            // X.
+            if (error.X > 0)
+                armOffset.X = 1;
+            else if (error.X < 0)
+                armOffset.X = -1;
+            else
+                armOffset.X = 0;
+
+            // Y.
+            if (error.Y > 0)
+                armOffset.Y = 1;
+            else if (error.Y < 0)
+                armOffset.Y = -1;
+            else
+                armOffset.Y = 0;
+
+            return armOffset;
+        }
 
         #region Button
 
         private void buttonConnect_Click(object sender, EventArgs e)
         {
-            Arm.Connect();
-            Camera.Open();
+            if (checkBoxEnableArm.Checked)
+            {
+                _arm.Connect();
+                buttonHoming.Enabled = true;
+            }
 
+            _camera.Open();
             buttonStart.Enabled = true;
-            buttonHoming.Enabled = true;
+            checkBoxEnableArm.Enabled = false;
         }
 
         private void buttonDisconnect_Click(object sender, EventArgs e)
         {
-            Arm.Disconnect();
-            Camera.Exit();
+            if (checkBoxEnableArm.Checked)
+            {
+                _arm.Disconnect();
+            }
+            _camera.Exit();
 
             buttonStart.Enabled = false;
             buttonHoming.Enabled = false;
+            checkBoxEnableArm.Enabled = true;
         }
 
         private void buttonHoming_Click(object sender, EventArgs e)
         {
-            Arm.Do(new Homing());
+            if (checkBoxEnableArm.Checked)
+            {
+                _arm.Do(new Homing());
+            }
         }
 
         private void buttonStart_Click(object sender, EventArgs e)
         {
-            GetCornersOfAruco(out var ids, out var corners);
-            SaveArucoData(ids, corners);
-            ArmMove(0, 10);
+            AutoPositioning();
+            Application.Idle += ProcessFrame;
+        }
+
+        private void buttonStop_Click(object sender, EventArgs e)
+        {
+            Application.Idle -= ProcessFrame;
         }
 
         #endregion

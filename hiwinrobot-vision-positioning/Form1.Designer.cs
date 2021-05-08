@@ -35,13 +35,15 @@ namespace hiwinrobot_vision_positioning
             this.buttonHoming = new System.Windows.Forms.Button();
             this.buttonStart = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.checkBoxEnableArm = new System.Windows.Forms.CheckBox();
+            this.buttonStop = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMain)).BeginInit();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // pictureBoxMain
             // 
-            this.pictureBoxMain.Location = new System.Drawing.Point(226, 12);
+            this.pictureBoxMain.Location = new System.Drawing.Point(368, 12);
             this.pictureBoxMain.Name = "pictureBoxMain";
             this.pictureBoxMain.Size = new System.Drawing.Size(1344, 756);
             this.pictureBoxMain.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -92,20 +94,45 @@ namespace hiwinrobot_vision_positioning
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.buttonStop);
             this.panel1.Controls.Add(this.buttonConnect);
             this.panel1.Controls.Add(this.buttonStart);
             this.panel1.Controls.Add(this.buttonDisconnect);
             this.panel1.Controls.Add(this.buttonHoming);
             this.panel1.Location = new System.Drawing.Point(12, 12);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(208, 323);
+            this.panel1.Size = new System.Drawing.Size(208, 408);
             this.panel1.TabIndex = 3;
+            // 
+            // checkBoxEnableArm
+            // 
+            this.checkBoxEnableArm.AutoSize = true;
+            this.checkBoxEnableArm.Checked = true;
+            this.checkBoxEnableArm.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxEnableArm.Location = new System.Drawing.Point(12, 489);
+            this.checkBoxEnableArm.Name = "checkBoxEnableArm";
+            this.checkBoxEnableArm.Size = new System.Drawing.Size(201, 36);
+            this.checkBoxEnableArm.TabIndex = 4;
+            this.checkBoxEnableArm.Text = "Enable Arm";
+            this.checkBoxEnableArm.UseVisualStyleBackColor = true;
+            // 
+            // buttonStop
+            // 
+            this.buttonStop.Enabled = false;
+            this.buttonStop.Location = new System.Drawing.Point(3, 295);
+            this.buttonStop.Name = "buttonStop";
+            this.buttonStop.Size = new System.Drawing.Size(164, 67);
+            this.buttonStop.TabIndex = 5;
+            this.buttonStop.Text = "Stop";
+            this.buttonStop.UseVisualStyleBackColor = true;
+            this.buttonStop.Click += new System.EventHandler(this.buttonStop_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1651, 849);
+            this.ClientSize = new System.Drawing.Size(1950, 1158);
+            this.Controls.Add(this.checkBoxEnableArm);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.pictureBoxMain);
             this.Name = "Form1";
@@ -113,6 +140,7 @@ namespace hiwinrobot_vision_positioning
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMain)).EndInit();
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -124,6 +152,8 @@ namespace hiwinrobot_vision_positioning
         private System.Windows.Forms.Button buttonHoming;
         private System.Windows.Forms.Button buttonStart;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.CheckBox checkBoxEnableArm;
+        private System.Windows.Forms.Button buttonStop;
     }
 }
 
