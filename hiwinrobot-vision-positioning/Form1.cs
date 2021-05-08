@@ -171,7 +171,7 @@ namespace hiwinrobot_vision_positioning
             // X.
             float offsetX;
             if (error.X > 50)
-                offsetX = 15;
+                offsetX = 10;
             else if (error.X > 10)
                 offsetX = 3;
             else
@@ -187,7 +187,7 @@ namespace hiwinrobot_vision_positioning
             // Y.
             float offsetY;
             if (error.Y > 50)
-                offsetY = 15;
+                offsetY = 10;
             else if (error.Y > 10)
                 offsetY = 3;
             else
