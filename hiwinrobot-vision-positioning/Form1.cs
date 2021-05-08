@@ -67,6 +67,7 @@ namespace hiwinrobot_vision_positioning
             }
 
             DrawArucoMarkers(ref frame, ids, corners);
+            DrawExtInfo(ref frame, corners);
             pictureBoxMain.Image = frame.Clone().ToBitmap();
         }
 
@@ -104,6 +105,22 @@ namespace hiwinrobot_vision_positioning
             {
                 ArucoInvoke.DrawDetectedMarkers(frame, corners, ids, new MCvScalar(0, 255, 0));
             }
+        }
+
+        private void DrawExtInfo(ref Mat frame, VectorOfVectorOfPointF corners)
+        {
+            var frameSize = frame.Size;
+            var centerOfFrame = new Point(frameSize.Width / 2, frameSize.Height / 2);
+
+            CvInvoke.PutText(frame,
+                             "TARGET",
+                             new Point((int)Math.Round(corners[0][0].X), (int)Math.Round(corners[0][0].Y)),
+                             FontFace.HersheyComplex,
+                             1.2,
+                             new MCvScalar(0, 0, 255));
+
+            CvInvoke.Line(frame, new Point(centerOfFrame.X, 0), new Point(centerOfFrame.X, frameSize.Height), new MCvScalar(255, 0, 0));
+            CvInvoke.Line(frame, new Point(0, centerOfFrame.Y), new Point(frameSize.Width, centerOfFrame.Y), new MCvScalar(255, 0, 0));
         }
 
         private void SaveArucoData(int[] ids, PointF[][] corners)
