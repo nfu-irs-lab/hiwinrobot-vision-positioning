@@ -37,6 +37,7 @@ namespace hiwinrobot_vision_positioning
             this.panel1 = new System.Windows.Forms.Panel();
             this.checkBoxEnableArm = new System.Windows.Forms.CheckBox();
             this.buttonStop = new System.Windows.Forms.Button();
+            this.labelInfu = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMain)).BeginInit();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -127,11 +128,21 @@ namespace hiwinrobot_vision_positioning
             this.buttonStop.UseVisualStyleBackColor = true;
             this.buttonStop.Click += new System.EventHandler(this.buttonStop_Click);
             // 
+            // labelInfu
+            // 
+            this.labelInfu.AutoSize = true;
+            this.labelInfu.Location = new System.Drawing.Point(12, 561);
+            this.labelInfu.Name = "labelInfu";
+            this.labelInfu.Size = new System.Drawing.Size(33, 32);
+            this.labelInfu.TabIndex = 5;
+            this.labelInfu.Text = "--";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1950, 1158);
+            this.Controls.Add(this.labelInfu);
             this.Controls.Add(this.checkBoxEnableArm);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.pictureBoxMain);
@@ -154,6 +165,7 @@ namespace hiwinrobot_vision_positioning
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.CheckBox checkBoxEnableArm;
         private System.Windows.Forms.Button buttonStop;
+        private System.Windows.Forms.Label labelInfu;
     }
 }
 
