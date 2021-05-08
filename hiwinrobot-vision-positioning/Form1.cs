@@ -170,11 +170,11 @@ namespace hiwinrobot_vision_positioning
 
             // X.
             float offsetX;
-            if (error.X > 100)
+            if (Math.Abs(error.X) > 100)
                 offsetX = 20;
-            else if (error.X > 50)
+            else if (Math.Abs(error.X) > 50)
                 offsetX = 10;
-            else if (error.X > 10)
+            else if (Math.Abs(error.X) > 8)
                 offsetX = 3;
             else
                 offsetX = (float)0.5;
@@ -188,11 +188,11 @@ namespace hiwinrobot_vision_positioning
 
             // Y.
             float offsetY;
-            if (error.Y > 100)
+            if (Math.Abs(error.Y) > 100)
                 offsetY = 20;
-            else if (error.Y > 50)
+            else if (Math.Abs(error.Y) > 50)
                 offsetY = 10;
-            else if (error.Y > 10)
+            else if (Math.Abs(error.Y) > 8)
                 offsetY = 3;
             else
                 offsetY = (float)0.5;
