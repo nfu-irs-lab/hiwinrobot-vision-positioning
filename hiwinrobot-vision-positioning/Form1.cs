@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using NFUIRSL.HRTK;
 using NFUIRSL.HRTK.Vision;
 using Emgu.CV;
@@ -46,12 +47,33 @@ namespace hiwinrobot_vision_positioning
         private void ProcessFrame(object sender, EventArgs args)
         {
             var frame = GetImage();
-            GetInfoOfAruco(out var ids, out var corners, out var frameSize);
+
+            GetInfoOfAruco(frame, out var ids, out var corners);
             if (ids.Size > 0)
             {
-                DrawArucoMarkers(ref frame, ids, corners);
+                var frameSize = frame.Size;
+                var centerOfFrame = new Point(frameSize.Width / 2, frameSize.Height / 2);
+                var nowPoint = new PointF(corners[0][0].X, corners[0][0].Y);
+                var error = new PointF(nowPoint.X - centerOfFrame.X,
+                                       nowPoint.Y - centerOfFrame.Y);
+
+                UpdateInfo(nowPoint, error);
+
+                if (Math.Abs(error.X) > _allowableError || Math.Abs(error.Y) > _allowableError)
+                {
+                    ArmMove(CalArmOffset(error));
+                    Thread.Sleep(10);
+                }
             }
+
+            DrawArucoMarkers(ref frame, ids, corners);
             pictureBoxMain.Image = frame.Clone().ToBitmap();
+        }
+
+        private void UpdateInfo(PointF nowPoint, PointF error)
+        {
+            labelInfu.Text = $"Now: {nowPoint.X},{nowPoint.Y}\r\n" +
+                             $"Err: {error.X},{error.Y}";
         }
 
         private Mat GetImage()
@@ -59,25 +81,21 @@ namespace hiwinrobot_vision_positioning
             return new Mat(_camera.GetImage().ToMat(), _aoi);
         }
 
-        private void GetInfoOfAruco(out VectorOfInt ids, out VectorOfVectorOfPointF corners, out Size frameSize)
+        private void GetInfoOfAruco(Mat frame, out VectorOfInt ids, out VectorOfVectorOfPointF corners)
         {
-            var frame = GetImage();
-            frameSize = frame.Size;
+            var idsVector = new VectorOfInt();
+            var cornersVector = new VectorOfVectorOfPointF();
+            var rejectedVector = new VectorOfVectorOfPointF();
 
-            using (var idsVector = new VectorOfInt())
-            using (var cornersVector = new VectorOfVectorOfPointF())
-            using (var rejectedVector = new VectorOfVectorOfPointF())
-            {
-                ArucoInvoke.DetectMarkers(frame,
-                                          ArucoDictionary,
-                                          cornersVector,
-                                          idsVector,
-                                          _detectorParameters,
-                                          rejectedVector);
+            ArucoInvoke.DetectMarkers(frame,
+                                      ArucoDictionary,
+                                      cornersVector,
+                                      idsVector,
+                                      _detectorParameters,
+                                      rejectedVector);
 
-                ids = idsVector;
-                corners = cornersVector;
-            }
+            ids = idsVector;
+            corners = cornersVector;
         }
 
         private void DrawArucoMarkers(ref Mat frame, VectorOfInt ids, VectorOfVectorOfPointF corners)
@@ -109,31 +127,6 @@ namespace hiwinrobot_vision_positioning
             csv.Write("aruco_data.csv",
                       csvData,
                       new List<string> { "id", "corner_1", "corner_2", "corner_3", "corner_4" });
-        }
-
-        private void AutoPositioning()
-        {
-            var positionDone = false;
-            while (!positionDone)
-            {
-                GetInfoOfAruco(out var ids, out var corners, out var frameSize);
-                if (ids.Size > 0)
-                {
-                    var centerOfFrame = new Point(frameSize.Width / 2, frameSize.Height / 2);
-                    var error = new PointF(corners[0][0].X - centerOfFrame.X,
-                                           corners[0][0].Y - centerOfFrame.Y);
-
-                    if (Math.Abs(error.X) < _allowableError && Math.Abs(error.Y) < _allowableError)
-                    {
-                        positionDone = true;
-                    }
-                    else
-                    {
-                        ArmMove(CalArmOffset(error));
-                        Thread.Sleep(10);
-                    }
-                }
-            }
         }
 
         private void ArmMove(PointF value)
@@ -191,6 +184,7 @@ namespace hiwinrobot_vision_positioning
             _camera.Exit();
 
             buttonStart.Enabled = false;
+            buttonStop.Enabled = false;
             buttonHoming.Enabled = false;
             checkBoxEnableArm.Enabled = true;
         }
@@ -205,13 +199,16 @@ namespace hiwinrobot_vision_positioning
 
         private void buttonStart_Click(object sender, EventArgs e)
         {
-            AutoPositioning();
             Application.Idle += ProcessFrame;
+            buttonStart.Enabled = false;
+            buttonStop.Enabled = true;
         }
 
         private void buttonStop_Click(object sender, EventArgs e)
         {
             Application.Idle -= ProcessFrame;
+            buttonStart.Enabled = true;
+            buttonStop.Enabled = false;
         }
 
         #endregion
