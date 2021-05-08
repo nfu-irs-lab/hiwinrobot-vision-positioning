@@ -21,6 +21,7 @@ namespace hiwinrobot_vision_positioning
     public partial class Form1 : Form
     {
         private readonly string _armIp = "192.168.0.3";
+        private readonly float _allowableError = 10;
         private readonly IArmController _arm;
         private readonly IDSCamera _camera;
         private readonly Rectangle _aoi = new Rectangle(500, 400, 1920, 1080);
@@ -42,25 +43,33 @@ namespace hiwinrobot_vision_positioning
             _camera.Init();
         }
 
-        private void GetCornersOfAruco(out int[] idsOut, out PointF[][] cornersOut)
+        private void GetInfoOfAruco(out int[] ids, out PointF[][] corners, out Size frameSize)
         {
             var frame = new Mat(_camera.GetImage().ToMat(), _aoi);
+            frameSize = frame.Size;
 
-            using (var ids = new VectorOfInt())
-            using (var corners = new VectorOfVectorOfPointF())
-            using (var rejected = new VectorOfVectorOfPointF())
+            using (var idsVector = new VectorOfInt())
+            using (var cornersVector = new VectorOfVectorOfPointF())
+            using (var rejectedVector = new VectorOfVectorOfPointF())
             {
-                ArucoInvoke.DetectMarkers(frame, ArucoDictionary, corners, ids, _detectorParameters, rejected);
+                ArucoInvoke.DetectMarkers(frame,
+                                          ArucoDictionary,
+                                          cornersVector,
+                                          idsVector,
+                                          _detectorParameters,
+                                          rejectedVector);
 
-                if (ids.Size > 0)
-                {
-                    ArucoInvoke.DrawDetectedMarkers(frame, corners, ids, new MCvScalar(0, 255, 0));
-                }
+                ids = idsVector.ToArray();
+                corners = cornersVector.ToArrayOfArray();
+            }
+        }
 
+        private void DrawArucoMarkers(Mat frame, VectorOfInt ids, VectorOfVectorOfPointF corners)
+        {
+            if (ids.Size > 0)
+            {
+                ArucoInvoke.DrawDetectedMarkers(frame, corners, ids, new MCvScalar(0, 255, 0));
                 pictureBoxMain.Image = frame.Clone().ToBitmap();
-
-                idsOut = ids.ToArray();
-                cornersOut = corners.ToArrayOfArray();
             }
         }
 
@@ -87,50 +96,60 @@ namespace hiwinrobot_vision_positioning
                       new List<string> { "id", "corner_1", "corner_2", "corner_3", "corner_4" });
         }
 
-        private void ArmMove(int targetArucoId, float allowableError)
+        private void AutoPositioning()
         {
-            // Target point is the center point of image.
-            var targetPoint = new PointF(_aoi.Width / 2, _aoi.Height / 2);
-            var nowPoint = new PointF();
-            double errorX;
-            double errorY;
-
-            do
+            var positionDone = false;
+            while (!positionDone)
             {
-                // Get point.
-                GetCornersOfAruco(out var ids, out var corners);
-                var targetIndex = 0;
-                for (int i = 0; i < ids.Length; i++)
+                GetInfoOfAruco(out var ids, out var corners, out var frameSize);
+                if (ids.Length > 0)
                 {
-                    if (ids[i] == targetArucoId)
+                    var centerOfFrame = new Point(frameSize.Width / 2, frameSize.Height / 2);
+                    var error = new PointF(corners[0][0].X - centerOfFrame.X,
+                                           corners[0][0].Y - centerOfFrame.Y);
+
+                    if (Math.Abs(error.X) < _allowableError && Math.Abs(error.Y) < _allowableError)
                     {
-                        targetIndex = i;
-                        break;
+                        positionDone = true;
+                    }
+                    else
+                    {
+                        ArmMove(CalArmOffset(error));
+                        Thread.Sleep(10);
                     }
                 }
-                nowPoint = corners[targetIndex][0];
-
-                // X.
-                errorX = targetPoint.X - nowPoint.X;
-                var armOffsetX = 0.0;
-                if (errorX > 0)
-                    armOffsetX = 5;
-                else if (errorX < 0)
-                    armOffsetX = -5;
-
-                // Y.
-                errorY = targetPoint.Y - nowPoint.Y;
-                var armOffsetY = 0.0;
-                if (errorY > 0)
-                    armOffsetY = 5;
-                else if (errorY < 0)
-                    armOffsetY = -5;
-
-                _arm.Do(new RelativeMotion(armOffsetX, armOffsetY, 0));
-                Thread.Sleep(500);
             }
-            while (Math.Abs(errorX) > allowableError ||
-                   Math.Abs(errorY) > allowableError);
+        }
+
+        private void ArmMove(PointF value)
+        {
+            if (checkBoxEnableArm.Checked)
+            {
+                _arm.Do(new RelativeMotion(value.X, value.Y, 0));
+            }
+        }
+
+        private PointF CalArmOffset(PointF error)
+        {
+            PointF armOffset = default;
+
+            // X.
+            if (error.X > 0)
+                armOffset.X = 1;
+            else if (error.X < 0)
+                armOffset.X = -1;
+            else
+                armOffset.X = 0;
+
+            // Y.
+            if (error.Y > 0)
+                armOffset.Y = 1;
+            else if (error.Y < 0)
+                armOffset.Y = -1;
+            else
+                armOffset.Y = 0;
+
+            return armOffset;
         }
 
         #region Button
@@ -171,12 +190,7 @@ namespace hiwinrobot_vision_positioning
 
         private void buttonStart_Click(object sender, EventArgs e)
         {
-            GetCornersOfAruco(out var ids, out var corners);
-            //SaveArucoData(ids, corners);
-            if (checkBoxEnableArm.Checked)
-            {
-                ArmMove(0, 10);
-            }
+            AutoPositioning();
         }
 
         #endregion
