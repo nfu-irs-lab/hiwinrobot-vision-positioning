@@ -150,32 +150,46 @@ namespace hiwinrobot_vision_positioning
 
         private void buttonConnect_Click(object sender, EventArgs e)
         {
-            Arm.Connect();
-            Camera.Open();
+            if (checkBoxEnableArm.Checked)
+            {
+                Arm.Connect();
+                buttonHoming.Enabled = true;
+            }
 
+            Camera.Open();
             buttonStart.Enabled = true;
-            buttonHoming.Enabled = true;
+            checkBoxEnableArm.Enabled = false;
         }
 
         private void buttonDisconnect_Click(object sender, EventArgs e)
         {
-            Arm.Disconnect();
+            if (checkBoxEnableArm.Checked)
+            {
+                Arm.Disconnect();
+            }
             Camera.Exit();
 
             buttonStart.Enabled = false;
             buttonHoming.Enabled = false;
+            checkBoxEnableArm.Enabled = true;
         }
 
         private void buttonHoming_Click(object sender, EventArgs e)
         {
-            Arm.Do(new Homing());
+            if (checkBoxEnableArm.Checked)
+            {
+                Arm.Do(new Homing());
+            }
         }
 
         private void buttonStart_Click(object sender, EventArgs e)
         {
             GetCornersOfAruco(out var ids, out var corners);
-            SaveArucoData(ids, corners);
-            ArmMove(0, 10);
+            //SaveArucoData(ids, corners);
+            if (checkBoxEnableArm.Checked)
+            {
+                ArmMove(0, 10);
+            }
         }
 
         #endregion
