@@ -169,18 +169,34 @@ namespace hiwinrobot_vision_positioning
             PointF armOffset = default;
 
             // X.
+            float offsetX;
+            if (error.X > 50)
+                offsetX = 15;
+            else if (error.X > 10)
+                offsetX = 3;
+            else
+                offsetX = 1;
+
             if (error.X > 0)
-                armOffset.X = 1;
+                armOffset.X = offsetX;
             else if (error.X < 0)
-                armOffset.X = -1;
+                armOffset.X = -offsetX;
             else
                 armOffset.X = 0;
 
             // Y.
+            float offsetY;
+            if (error.Y > 50)
+                offsetY = 15;
+            else if (error.Y > 10)
+                offsetY = 3;
+            else
+                offsetY = 1;
+
             if (error.Y > 0)
-                armOffset.Y = -1;
+                armOffset.Y = -offsetY;
             else if (error.Y < 0)
-                armOffset.Y = 1;
+                armOffset.Y = offsetY;
             else
                 armOffset.Y = 0;
 
