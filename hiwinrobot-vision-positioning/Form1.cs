@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 using NFUIRSL.HRTK;
 using NFUIRSL.HRTK.Vision;
 using Emgu.CV;
@@ -52,8 +53,11 @@ namespace hiwinrobot_vision_positioning
             {
                 var frameSize = frame.Size;
                 var centerOfFrame = new Point(frameSize.Width / 2, frameSize.Height / 2);
-                var error = new PointF(corners[0][0].X - centerOfFrame.X,
-                                       corners[0][0].Y - centerOfFrame.Y);
+                var nowPoint = new PointF(corners[0][0].X, corners[0][0].Y);
+                var error = new PointF(nowPoint.X - centerOfFrame.X,
+                                       nowPoint.Y - centerOfFrame.Y);
+
+                UpdateInfo(nowPoint, error);
 
                 if (Math.Abs(error.X) > _allowableError || Math.Abs(error.Y) > _allowableError)
                 {
@@ -64,6 +68,12 @@ namespace hiwinrobot_vision_positioning
 
             DrawArucoMarkers(ref frame, ids, corners);
             pictureBoxMain.Image = frame.Clone().ToBitmap();
+        }
+
+        private void UpdateInfo(PointF nowPoint, PointF error)
+        {
+            labelInfu.Text = $"Now: {nowPoint.X},{nowPoint.Y}\r\n" +
+                             $"Err: {error.X},{error.Y}";
         }
 
         private Mat GetImage()
