@@ -38,8 +38,12 @@ namespace hiwinrobot_vision_positioning
             this.checkBoxEnableArm = new System.Windows.Forms.CheckBox();
             this.buttonStop = new System.Windows.Forms.Button();
             this.labelInfu = new System.Windows.Forms.Label();
+            this.numericUpDownTargetArucoId = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownAllowableError = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMain)).BeginInit();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTargetArucoId)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownAllowableError)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBoxMain
@@ -137,11 +141,32 @@ namespace hiwinrobot_vision_positioning
             this.labelInfu.TabIndex = 5;
             this.labelInfu.Text = "--";
             // 
+            // numericUpDownTargetArucoId
+            // 
+            this.numericUpDownTargetArucoId.Location = new System.Drawing.Point(12, 616);
+            this.numericUpDownTargetArucoId.Name = "numericUpDownTargetArucoId";
+            this.numericUpDownTargetArucoId.Size = new System.Drawing.Size(120, 38);
+            this.numericUpDownTargetArucoId.TabIndex = 6;
+            // 
+            // numericUpDownAollwableError
+            // 
+            this.numericUpDownAllowableError.Location = new System.Drawing.Point(15, 677);
+            this.numericUpDownAllowableError.Name = "numericUpDownAllowableError";
+            this.numericUpDownAllowableError.Size = new System.Drawing.Size(120, 38);
+            this.numericUpDownAllowableError.TabIndex = 7;
+            this.numericUpDownAllowableError.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1950, 1158);
+            this.Controls.Add(this.numericUpDownAllowableError);
+            this.Controls.Add(this.numericUpDownTargetArucoId);
             this.Controls.Add(this.labelInfu);
             this.Controls.Add(this.checkBoxEnableArm);
             this.Controls.Add(this.panel1);
@@ -150,6 +175,8 @@ namespace hiwinrobot_vision_positioning
             this.Text = "Vision Positioning";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMain)).EndInit();
             this.panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTargetArucoId)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownAllowableError)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -166,6 +193,8 @@ namespace hiwinrobot_vision_positioning
         private System.Windows.Forms.CheckBox checkBoxEnableArm;
         private System.Windows.Forms.Button buttonStop;
         private System.Windows.Forms.Label labelInfu;
+        private System.Windows.Forms.NumericUpDown numericUpDownTargetArucoId;
+        private System.Windows.Forms.NumericUpDown numericUpDownAllowableError;
     }
 }
 

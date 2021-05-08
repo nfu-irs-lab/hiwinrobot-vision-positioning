@@ -22,7 +22,6 @@ namespace hiwinrobot_vision_positioning
     public partial class Form1 : Form
     {
         private readonly string _armIp = "192.168.0.3";
-        private readonly float _allowableError = 10;
         private readonly IArmController _arm;
         private readonly IDSCamera _camera;
         private readonly Rectangle _aoi = new Rectangle(500, 400, 1920, 1080);
@@ -46,7 +45,7 @@ namespace hiwinrobot_vision_positioning
 
         private void ProcessFrame(object sender, EventArgs args)
         {
-            var targetArucoId = 0;
+            var targetArucoId = (int)numericUpDownTargetArucoId.Value;
             var targetArucoIdIndex = 0;
 
             var frame = GetImage();
@@ -74,7 +73,8 @@ namespace hiwinrobot_vision_positioning
                 DrawArucoMarkers(ref frame, ids, corners);
                 DrawExtInfo(ref frame, Point.Round(nowPoint));
 
-                if (Math.Abs(error.X) > _allowableError || Math.Abs(error.Y) > _allowableError)
+                if (Math.Abs(error.X) > (double)numericUpDownAllowableError.Value ||
+                    Math.Abs(error.Y) > (double)numericUpDownAllowableError.Value)
                 {
                     ArmMove(CalArmOffset(error));
                     Thread.Sleep(10);
@@ -170,12 +170,14 @@ namespace hiwinrobot_vision_positioning
 
             // X.
             float offsetX;
-            if (error.X > 50)
-                offsetX = 15;
+            if (error.X > 100)
+                offsetX = 20;
+            else if (error.X > 50)
+                offsetX = 10;
             else if (error.X > 10)
                 offsetX = 3;
             else
-                offsetX = 1;
+                offsetX = (float)0.5;
 
             if (error.X > 0)
                 armOffset.X = offsetX;
@@ -186,12 +188,14 @@ namespace hiwinrobot_vision_positioning
 
             // Y.
             float offsetY;
-            if (error.Y > 50)
-                offsetY = 15;
+            if (error.Y > 100)
+                offsetY = 20;
+            else if (error.Y > 50)
+                offsetY = 10;
             else if (error.Y > 10)
                 offsetY = 3;
             else
-                offsetY = 1;
+                offsetY = (float)0.5;
 
             if (error.Y > 0)
                 armOffset.Y = -offsetY;
@@ -210,6 +214,7 @@ namespace hiwinrobot_vision_positioning
             if (checkBoxEnableArm.Checked)
             {
                 _arm.Connect();
+                _arm.Speed = 10;
                 buttonHoming.Enabled = true;
             }
 
