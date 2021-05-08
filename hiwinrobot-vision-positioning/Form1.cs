@@ -46,18 +46,33 @@ namespace hiwinrobot_vision_positioning
 
         private void ProcessFrame(object sender, EventArgs args)
         {
+            var targetArucoId = 0;
+            var targetArucoIdIndex = 0;
+
             var frame = GetImage();
+            var frameSize = frame.Size;
+            var centerOfFrame = new Point(frameSize.Width / 2, frameSize.Height / 2);
 
             GetInfoOfAruco(frame, out var ids, out var corners);
-            if (ids.Size > 0)
+            if (ids.Size > 0 && Array.IndexOf(ids.ToArray(), targetArucoId) != -1)
             {
-                var frameSize = frame.Size;
-                var centerOfFrame = new Point(frameSize.Width / 2, frameSize.Height / 2);
-                var nowPoint = new PointF(corners[0][0].X, corners[0][0].Y);
+                for (int i = 0; i < ids.Size; i++)
+                {
+                    if (ids[i] == targetArucoId)
+                    {
+                        targetArucoIdIndex = i;
+                        break;
+                    }
+                }
+
+                var nowPoint = new PointF(corners[targetArucoIdIndex][0].X,
+                                          corners[targetArucoIdIndex][0].Y);
                 var error = new PointF(nowPoint.X - centerOfFrame.X,
                                        nowPoint.Y - centerOfFrame.Y);
 
                 UpdateInfo(nowPoint, error);
+                DrawArucoMarkers(ref frame, ids, corners);
+                DrawExtInfo(ref frame, Point.Round(nowPoint));
 
                 if (Math.Abs(error.X) > _allowableError || Math.Abs(error.Y) > _allowableError)
                 {
@@ -66,7 +81,6 @@ namespace hiwinrobot_vision_positioning
                 }
             }
 
-            DrawArucoMarkers(ref frame, ids, corners);
             pictureBoxMain.Image = frame.Clone().ToBitmap();
         }
 
@@ -100,10 +114,23 @@ namespace hiwinrobot_vision_positioning
 
         private void DrawArucoMarkers(ref Mat frame, VectorOfInt ids, VectorOfVectorOfPointF corners)
         {
-            if (ids.Size > 0)
-            {
-                ArucoInvoke.DrawDetectedMarkers(frame, corners, ids, new MCvScalar(0, 255, 0));
-            }
+            ArucoInvoke.DrawDetectedMarkers(frame, corners, ids, new MCvScalar(0, 255, 0));
+        }
+
+        private void DrawExtInfo(ref Mat frame, Point nowPoint)
+        {
+            var frameSize = frame.Size;
+            var centerOfFrame = new Point(frameSize.Width / 2, frameSize.Height / 2);
+
+            CvInvoke.PutText(frame,
+                             "TARGET",
+                             nowPoint,
+                             FontFace.HersheyComplex,
+                             1.2,
+                             new MCvScalar(0, 0, 255));
+
+            CvInvoke.Line(frame, new Point(centerOfFrame.X, 0), new Point(centerOfFrame.X, frameSize.Height), new MCvScalar(255, 0, 0));
+            CvInvoke.Line(frame, new Point(0, centerOfFrame.Y), new Point(frameSize.Width, centerOfFrame.Y), new MCvScalar(255, 0, 0));
         }
 
         private void SaveArucoData(int[] ids, PointF[][] corners)
@@ -143,9 +170,9 @@ namespace hiwinrobot_vision_positioning
 
             // X.
             if (error.X > 0)
-                armOffset.X = 1;
-            else if (error.X < 0)
                 armOffset.X = -1;
+            else if (error.X < 0)
+                armOffset.X = 1;
             else
                 armOffset.X = 0;
 
