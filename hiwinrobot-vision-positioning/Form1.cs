@@ -22,7 +22,6 @@ namespace hiwinrobot_vision_positioning
     public partial class Form1 : Form
     {
         private readonly string _armIp = "192.168.0.3";
-        private readonly float _allowableError = 10;
         private readonly IArmController _arm;
         private readonly IDSCamera _camera;
         private readonly Rectangle _aoi = new Rectangle(500, 400, 1920, 1080);
@@ -46,7 +45,7 @@ namespace hiwinrobot_vision_positioning
 
         private void ProcessFrame(object sender, EventArgs args)
         {
-            var targetArucoId = 0;
+            var targetArucoId = (int)numericUpDownTargetArucoId.Value;
             var targetArucoIdIndex = 0;
 
             var frame = GetImage();
@@ -74,7 +73,8 @@ namespace hiwinrobot_vision_positioning
                 DrawArucoMarkers(ref frame, ids, corners);
                 DrawExtInfo(ref frame, Point.Round(nowPoint));
 
-                if (Math.Abs(error.X) > _allowableError || Math.Abs(error.Y) > _allowableError)
+                if (Math.Abs(error.X) > (double)numericUpDownAllowableError.Value ||
+                    Math.Abs(error.Y) > (double)numericUpDownAllowableError.Value)
                 {
                     ArmMove(CalArmOffset(error));
                     Thread.Sleep(10);
