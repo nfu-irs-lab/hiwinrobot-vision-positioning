@@ -66,7 +66,7 @@ namespace hiwinrobot_vision_positioning
 
                 if (ids.Size > 0)
                 {
-                    ArucoInvoke.DrawDetectedDiamonds(frame, corners, ids, new MCvScalar(0, 255, 0));
+                    ArucoInvoke.DrawDetectedMarkers(frame, corners, ids, new MCvScalar(0, 255, 0));
                 }
 
                 pictureBoxMain.Image = frame.Clone().ToBitmap();
