@@ -170,17 +170,17 @@ namespace hiwinrobot_vision_positioning
 
             // X.
             if (error.X > 0)
-                armOffset.X = -1;
-            else if (error.X < 0)
                 armOffset.X = 1;
+            else if (error.X < 0)
+                armOffset.X = -1;
             else
                 armOffset.X = 0;
 
             // Y.
             if (error.Y > 0)
-                armOffset.Y = 1;
-            else if (error.Y < 0)
                 armOffset.Y = -1;
+            else if (error.Y < 0)
+                armOffset.Y = 1;
             else
                 armOffset.Y = 0;
 
