@@ -35,15 +35,16 @@ namespace hiwinrobot_vision_positioning
             this.buttonHoming = new System.Windows.Forms.Button();
             this.buttonStart = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.buttonStop = new System.Windows.Forms.Button();
-            this.checkBoxEnableArm = new System.Windows.Forms.CheckBox();
-            this.labelInfu = new System.Windows.Forms.Label();
-            this.numericUpDownTargetArucoId = new System.Windows.Forms.NumericUpDown();
             this.numericUpDownAllowableError = new System.Windows.Forms.NumericUpDown();
+            this.checkBoxEnableArm = new System.Windows.Forms.CheckBox();
+            this.buttonStop = new System.Windows.Forms.Button();
+            this.numericUpDownTargetArucoId = new System.Windows.Forms.NumericUpDown();
+            this.labelInfu = new System.Windows.Forms.Label();
+            this.buttonVPDoOnce = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMain)).BeginInit();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTargetArucoId)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownAllowableError)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTargetArucoId)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBoxMain
@@ -112,45 +113,6 @@ namespace hiwinrobot_vision_positioning
             this.panel1.Size = new System.Drawing.Size(208, 722);
             this.panel1.TabIndex = 3;
             // 
-            // buttonStop
-            // 
-            this.buttonStop.Enabled = false;
-            this.buttonStop.Location = new System.Drawing.Point(3, 295);
-            this.buttonStop.Name = "buttonStop";
-            this.buttonStop.Size = new System.Drawing.Size(164, 67);
-            this.buttonStop.TabIndex = 5;
-            this.buttonStop.Text = "Stop";
-            this.buttonStop.UseVisualStyleBackColor = true;
-            this.buttonStop.Click += new System.EventHandler(this.buttonStop_Click);
-            // 
-            // checkBoxEnableArm
-            // 
-            this.checkBoxEnableArm.AutoSize = true;
-            this.checkBoxEnableArm.Checked = true;
-            this.checkBoxEnableArm.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxEnableArm.Location = new System.Drawing.Point(3, 456);
-            this.checkBoxEnableArm.Name = "checkBoxEnableArm";
-            this.checkBoxEnableArm.Size = new System.Drawing.Size(201, 36);
-            this.checkBoxEnableArm.TabIndex = 4;
-            this.checkBoxEnableArm.Text = "Enable Arm";
-            this.checkBoxEnableArm.UseVisualStyleBackColor = true;
-            // 
-            // labelInfu
-            // 
-            this.labelInfu.AutoSize = true;
-            this.labelInfu.Location = new System.Drawing.Point(12, 752);
-            this.labelInfu.Name = "labelInfu";
-            this.labelInfu.Size = new System.Drawing.Size(33, 32);
-            this.labelInfu.TabIndex = 5;
-            this.labelInfu.Text = "--";
-            // 
-            // numericUpDownTargetArucoId
-            // 
-            this.numericUpDownTargetArucoId.Location = new System.Drawing.Point(3, 368);
-            this.numericUpDownTargetArucoId.Name = "numericUpDownTargetArucoId";
-            this.numericUpDownTargetArucoId.Size = new System.Drawing.Size(120, 38);
-            this.numericUpDownTargetArucoId.TabIndex = 6;
-            // 
             // numericUpDownAllowableError
             // 
             this.numericUpDownAllowableError.Location = new System.Drawing.Point(3, 412);
@@ -168,11 +130,61 @@ namespace hiwinrobot_vision_positioning
             0,
             0});
             // 
+            // checkBoxEnableArm
+            // 
+            this.checkBoxEnableArm.AutoSize = true;
+            this.checkBoxEnableArm.Checked = true;
+            this.checkBoxEnableArm.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxEnableArm.Location = new System.Drawing.Point(3, 456);
+            this.checkBoxEnableArm.Name = "checkBoxEnableArm";
+            this.checkBoxEnableArm.Size = new System.Drawing.Size(201, 36);
+            this.checkBoxEnableArm.TabIndex = 4;
+            this.checkBoxEnableArm.Text = "Enable Arm";
+            this.checkBoxEnableArm.UseVisualStyleBackColor = true;
+            // 
+            // buttonStop
+            // 
+            this.buttonStop.Enabled = false;
+            this.buttonStop.Location = new System.Drawing.Point(3, 295);
+            this.buttonStop.Name = "buttonStop";
+            this.buttonStop.Size = new System.Drawing.Size(164, 67);
+            this.buttonStop.TabIndex = 5;
+            this.buttonStop.Text = "Stop";
+            this.buttonStop.UseVisualStyleBackColor = true;
+            this.buttonStop.Click += new System.EventHandler(this.buttonStop_Click);
+            // 
+            // numericUpDownTargetArucoId
+            // 
+            this.numericUpDownTargetArucoId.Location = new System.Drawing.Point(3, 368);
+            this.numericUpDownTargetArucoId.Name = "numericUpDownTargetArucoId";
+            this.numericUpDownTargetArucoId.Size = new System.Drawing.Size(120, 38);
+            this.numericUpDownTargetArucoId.TabIndex = 6;
+            // 
+            // labelInfu
+            // 
+            this.labelInfu.AutoSize = true;
+            this.labelInfu.Location = new System.Drawing.Point(12, 752);
+            this.labelInfu.Name = "labelInfu";
+            this.labelInfu.Size = new System.Drawing.Size(33, 32);
+            this.labelInfu.TabIndex = 5;
+            this.labelInfu.Text = "--";
+            // 
+            // buttonVPDoOnce
+            // 
+            this.buttonVPDoOnce.Location = new System.Drawing.Point(742, 920);
+            this.buttonVPDoOnce.Name = "buttonVPDoOnce";
+            this.buttonVPDoOnce.Size = new System.Drawing.Size(154, 73);
+            this.buttonVPDoOnce.TabIndex = 6;
+            this.buttonVPDoOnce.Text = "button1";
+            this.buttonVPDoOnce.UseVisualStyleBackColor = true;
+            this.buttonVPDoOnce.Click += new System.EventHandler(this.buttonVPDoOnce_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(16F, 31F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1950, 1158);
+            this.Controls.Add(this.buttonVPDoOnce);
             this.Controls.Add(this.labelInfu);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.pictureBoxMain);
@@ -181,8 +193,8 @@ namespace hiwinrobot_vision_positioning
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxMain)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTargetArucoId)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownAllowableError)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownTargetArucoId)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -201,6 +213,7 @@ namespace hiwinrobot_vision_positioning
         private System.Windows.Forms.Label labelInfu;
         private System.Windows.Forms.NumericUpDown numericUpDownTargetArucoId;
         private System.Windows.Forms.NumericUpDown numericUpDownAllowableError;
+        private System.Windows.Forms.Button buttonVPDoOnce;
     }
 }
 

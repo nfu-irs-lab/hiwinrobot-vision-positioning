@@ -21,6 +21,8 @@ using Emgu.CV.Aruco;
 using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
+using RASDK.Arm.TMRobot;
+using RASDK.Vision.Positioning;
 
 namespace hiwinrobot_vision_positioning
 {
@@ -33,14 +35,33 @@ namespace hiwinrobot_vision_positioning
         private readonly string _armIp
 #if USE_HIWIN
             = "192.168.100.111";
-
 #else
             = RASDK.Arm.TMRobot.Default.IpOfArmConnection;
+
 #endif
 
         private readonly int _armPort = RASDK.Arm.TMRobot.Default.PortOfArmConnection;
         private readonly IDSCamera _camera;
+
+        private readonly CameraParameter _cameraParameter = new CameraParameter(1574.2,
+                                                                                1085.4,
+                                                                                12361,
+                                                                                12346,
+                                                                                -31.3109,
+                                                                                new double[] { 0, 0, 0 },
+                                                                                new double[] { 0, 0, 2973.7 });
+
+        private readonly CCNF _ccnf;
         private readonly DetectorParameters _detectorParameters;
+
+        private PointF _targatPoint = PointF.Empty;
+
+        private readonly CCNF.TransferFunctionOfVirtualCheckBoardToArm _tf =
+            (double x, double y, out double armX, out double armY) =>
+            {
+                armX = x + 519;
+                armY = y - 122;
+            };
 
         private Dictionary _dict;
 
@@ -57,6 +78,8 @@ namespace hiwinrobot_vision_positioning
 #endif
             _camera = new IDSCamera(message);
             _camera.Init();
+
+            _ccnf = new CCNF(_cameraParameter, _tf);
         }
 
         private Dictionary ArucoDictionary
@@ -200,6 +223,7 @@ namespace hiwinrobot_vision_positioning
 
                 var nowPoint = new PointF(corners[targetArucoIdIndex][0].X,
                                           corners[targetArucoIdIndex][0].Y);
+                _targatPoint = nowPoint;
                 var error = new PointF(nowPoint.X - centerOfFrame.X,
                                        nowPoint.Y - centerOfFrame.Y);
 
@@ -210,8 +234,8 @@ namespace hiwinrobot_vision_positioning
                 if (Math.Abs(error.X) > (double)numericUpDownAllowableError.Value ||
                     Math.Abs(error.Y) > (double)numericUpDownAllowableError.Value)
                 {
-                    ArmMove(CalArmOffset(error));
-                    Thread.Sleep(10);
+                    // ArmMove(CalArmOffset(error));
+                    // Thread.Sleep(10);
                 }
             }
 
@@ -297,6 +321,14 @@ namespace hiwinrobot_vision_positioning
             Application.Idle -= ProcessFrame;
             buttonStart.Enabled = true;
             buttonStop.Enabled = false;
+        }
+
+        private void buttonVPDoOnce_Click(object sender, EventArgs e)
+        {
+            ProcessFrame(null,null);
+            
+            _ccnf.ImageToArm((int)_targatPoint.X,(int)_targatPoint.Y,out var armX,out var armY);
+            _arm.Motion().Absolute(armX, armY,0,0,0,0);
         }
 
         #endregion Button
