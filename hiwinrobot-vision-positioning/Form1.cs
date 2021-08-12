@@ -60,13 +60,16 @@ namespace hiwinrobot_vision_positioning
         }
 
         private Dictionary ArucoDictionary
-                    => _dict ?? (_dict = new Dictionary(Dictionary.PredefinedDictionaryName.Dict4X4_100));
+            => _dict ?? (_dict = new Dictionary(Dictionary.PredefinedDictionaryName.Dict4X4_100));
 
         private void ArmMove(PointF value)
         {
             if (checkBoxEnableArm.Checked)
             {
-                _arm.Motion().Relative(value.X, value.Y, 0, 0, 0, 0);
+                // _arm.Motion().Relative(value.X, value.Y, 0, 0, 0, 0);
+                _arm.Motion().Relative(value.Y, -value.X, 0, 0, 0, 0);
+                Thread.Sleep(50);
+                _arm.Motion().Abort();
             }
         }
 
@@ -76,11 +79,11 @@ namespace hiwinrobot_vision_positioning
 
             // X.
             float offsetX;
-            if (error.X > 100)
+            if (Math.Abs(error.X) > 100)
                 offsetX = 20;
-            else if (error.X > 50)
+            else if (Math.Abs(error.X) > 50)
                 offsetX = 10;
-            else if (error.X > 10)
+            else if (Math.Abs(error.X) > 10)
                 offsetX = 3;
             else
                 offsetX = (float)0.5;
@@ -94,11 +97,11 @@ namespace hiwinrobot_vision_positioning
 
             // Y.
             float offsetY;
-            if (error.Y > 100)
+            if (Math.Abs(error.Y) > 100)
                 offsetY = 20;
-            else if (error.Y > 50)
+            else if (Math.Abs(error.Y) > 50)
                 offsetY = 10;
-            else if (error.Y > 10)
+            else if (Math.Abs(error.Y) > 10)
                 offsetY = 3;
             else
                 offsetY = (float)0.5;
@@ -131,13 +134,25 @@ namespace hiwinrobot_vision_positioning
                              new MCvScalar(0, 0, 255));
 
             // Draw a cross.
-            CvInvoke.Line(frame, new Point(centerOfFrame.X - 1, 0), new Point(centerOfFrame.X - 1, frameSize.Height), new MCvScalar(255, 0, 0));
+            CvInvoke.Line(frame,
+                          new Point(centerOfFrame.X - 1, 0),
+                          new Point(centerOfFrame.X - 1, frameSize.Height),
+                          new MCvScalar(255, 0, 0));
             CvInvoke.Line(frame, new Point(centerOfFrame.X, 0), new Point(centerOfFrame.X, frameSize.Height), new MCvScalar(255, 0, 0));
-            CvInvoke.Line(frame, new Point(centerOfFrame.X + 1, 0), new Point(centerOfFrame.X + 1, frameSize.Height), new MCvScalar(255, 0, 0));
+            CvInvoke.Line(frame,
+                          new Point(centerOfFrame.X + 1, 0),
+                          new Point(centerOfFrame.X + 1, frameSize.Height),
+                          new MCvScalar(255, 0, 0));
 
-            CvInvoke.Line(frame, new Point(0, centerOfFrame.Y - 1), new Point(frameSize.Width, centerOfFrame.Y - 1), new MCvScalar(255, 0, 0));
+            CvInvoke.Line(frame,
+                          new Point(0, centerOfFrame.Y - 1),
+                          new Point(frameSize.Width, centerOfFrame.Y - 1),
+                          new MCvScalar(255, 0, 0));
             CvInvoke.Line(frame, new Point(0, centerOfFrame.Y), new Point(frameSize.Width, centerOfFrame.Y), new MCvScalar(255, 0, 0));
-            CvInvoke.Line(frame, new Point(0, centerOfFrame.Y + 1), new Point(frameSize.Width, centerOfFrame.Y + 1), new MCvScalar(255, 0, 0));
+            CvInvoke.Line(frame,
+                          new Point(0, centerOfFrame.Y + 1),
+                          new Point(frameSize.Width, centerOfFrame.Y + 1),
+                          new MCvScalar(255, 0, 0));
         }
 
         private Mat GetImage()
