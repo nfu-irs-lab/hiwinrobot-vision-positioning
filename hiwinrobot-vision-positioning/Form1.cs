@@ -1,4 +1,4 @@
-﻿#define USE_HIWIN
+﻿// #define USE_HIWIN
 
 using System;
 using System.Collections.Generic;
