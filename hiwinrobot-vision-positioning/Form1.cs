@@ -130,8 +130,14 @@ namespace hiwinrobot_vision_positioning
                              1.2,
                              new MCvScalar(0, 0, 255));
 
+            // Draw a cross.
+            CvInvoke.Line(frame, new Point(centerOfFrame.X - 1, 0), new Point(centerOfFrame.X - 1, frameSize.Height), new MCvScalar(255, 0, 0));
             CvInvoke.Line(frame, new Point(centerOfFrame.X, 0), new Point(centerOfFrame.X, frameSize.Height), new MCvScalar(255, 0, 0));
+            CvInvoke.Line(frame, new Point(centerOfFrame.X + 1, 0), new Point(centerOfFrame.X + 1, frameSize.Height), new MCvScalar(255, 0, 0));
+
+            CvInvoke.Line(frame, new Point(0, centerOfFrame.Y - 1), new Point(frameSize.Width, centerOfFrame.Y - 1), new MCvScalar(255, 0, 0));
             CvInvoke.Line(frame, new Point(0, centerOfFrame.Y), new Point(frameSize.Width, centerOfFrame.Y), new MCvScalar(255, 0, 0));
+            CvInvoke.Line(frame, new Point(0, centerOfFrame.Y + 1), new Point(frameSize.Width, centerOfFrame.Y + 1), new MCvScalar(255, 0, 0));
         }
 
         private Mat GetImage()
@@ -222,7 +228,6 @@ namespace hiwinrobot_vision_positioning
 
         private void UpdateInfo(PointF nowPoint, PointF error)
         {
-
             labelInfu.Text = $"Now: {nowPoint.X},{nowPoint.Y}\r\n" +
                              $"Err: {error.X},{error.Y}";
         }
