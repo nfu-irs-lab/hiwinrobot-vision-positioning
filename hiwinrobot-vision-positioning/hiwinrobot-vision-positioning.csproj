@@ -23,77 +23,108 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-        <PlatformTarget>AnyCPU</PlatformTarget>
-        <DebugType>pdbonly</DebugType>
-        <Optimize>true</Optimize>
-        <OutputPath>bin\Release\</OutputPath>
-        <DefineConstants>TRACE</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-        <DebugSymbols>true</DebugSymbols>
-        <OutputPath>bin\x64\Debug\</OutputPath>
-        <DefineConstants>DEBUG;TRACE</DefineConstants>
-        <DebugType>full</DebugType>
-        <PlatformTarget>x64</PlatformTarget>
-        <LangVersion>7.3</LangVersion>
-        <ErrorReport>prompt</ErrorReport>
-        <Prefer32Bit>true</Prefer32Bit>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-        <OutputPath>bin\x64\Release\</OutputPath>
-        <DefineConstants>TRACE</DefineConstants>
-        <Optimize>true</Optimize>
-        <DebugType>pdbonly</DebugType>
-        <PlatformTarget>x64</PlatformTarget>
-        <LangVersion>7.3</LangVersion>
-        <ErrorReport>prompt</ErrorReport>
-        <Prefer32Bit>true</Prefer32Bit>
-    </PropertyGroup>
-    <ItemGroup>
-        <Reference Include="Emgu.CV.Bitmap, Version=4.5.1.4349, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
-            <HintPath>..\packages\Emgu.CV.Bitmap.4.5.1.4349\lib\netstandard2.0\Emgu.CV.Bitmap.dll</HintPath>
-        </Reference>
-        <Reference Include="Emgu.CV.Platform.NetStandard, Version=4.5.1.4349, Culture=neutral, PublicKeyToken=7281126722ab4438">
-            <HintPath>..\packages\Emgu.CV.4.5.1.4349\lib\netstandard2.0\Emgu.CV.Platform.NetStandard.dll</HintPath>
-            <Private>True</Private>
-        </Reference>
-        <Reference Include="mscorlib"/>
-        <Reference Include="NFUIRSL.HRTK, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-            <HintPath>..\packages\NFUIRSL.HRTK.1.2.0\lib\net472\NFUIRSL.HRTK.dll</HintPath>
-        </Reference>
-        <Reference Include="NFUIRSL.HRTK.Vision, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-            <HintPath>..\packages\NFUIRSL.HRTK.1.2.0\lib\net472\NFUIRSL.HRTK.Vision.dll</HintPath>
-        </Reference>
-        <Reference Include="System"/>
-        <Reference Include="System.ComponentModel.Composition"/>
-        <Reference Include="System.Core"/>
-        <Reference Include="System.Drawing.Common, Version=4.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-            <HintPath>..\packages\System.Drawing.Common.5.0.0\lib\net461\System.Drawing.Common.dll</HintPath>
-        </Reference>
-        <Reference Include="System.Drawing.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-            <HintPath>..\packages\System.Drawing.Primitives.4.3.0\lib\net45\System.Drawing.Primitives.dll</HintPath>
-            <Private>True</Private>
-        </Reference>
-        <Reference Include="System.Runtime, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-            <HintPath>..\packages\System.Runtime.4.3.1\lib\net462\System.Runtime.dll</HintPath>
-            <Private>True</Private>
-        </Reference>
-        <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-            <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
-            <Private>True</Private>
-        </Reference>
-        <Reference Include="System.Xml.Linq"/>
-        <Reference Include="System.Data.DataSetExtensions"/>
-        <Reference Include="Microsoft.CSharp"/>
-        <Reference Include="System.Data"/>
-        <Reference Include="System.Deployment"/>
-        <Reference Include="System.Drawing"/>
-        <Reference Include="System.Net.Http"/>
-        <Reference Include="System.Windows.Forms"/>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Emgu.CV.Bitmap, Version=4.5.3.4721, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
+      <HintPath>..\packages\Emgu.CV.Bitmap.4.5.3.4721\lib\netstandard2.0\Emgu.CV.Bitmap.dll</HintPath>
+    </Reference>
+    <Reference Include="Emgu.CV.Platform.NetStandard, Version=4.5.3.4721, Culture=neutral, PublicKeyToken=7281126722ab4438, processorArchitecture=MSIL">
+      <HintPath>..\packages\Emgu.CV.4.5.3.4721\lib\netstandard2.0\Emgu.CV.Platform.NetStandard.dll</HintPath>
+    </Reference>
+    <Reference Include="mscorlib" />
+    <Reference Include="RASDK.Arm, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\NFUIRSL.RASDK.0.1.4\lib\net472\RASDK.Arm.dll</HintPath>
+    </Reference>
+    <Reference Include="RASDK.Basic, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\NFUIRSL.RASDK.0.1.4\lib\net472\RASDK.Basic.dll</HintPath>
+    </Reference>
+    <Reference Include="RASDK.Gripper, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\NFUIRSL.RASDK.0.1.4\lib\net472\RASDK.Gripper.dll</HintPath>
+    </Reference>
+    <Reference Include="RASDK.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\NFUIRSL.RASDK.0.1.4\lib\net472\RASDK.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="RASDK.Vision, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\NFUIRSL.RASDK.0.1.4\lib\net472\RASDK.Vision.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing.Common, Version=4.0.0.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Common.5.0.2\lib\net461\System.Drawing.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing.Primitives, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\packages\System.Drawing.Primitives.4.3.0\lib\net45\System.Drawing.Primitives.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\packages\System.Runtime.4.3.1\lib\net462\System.Runtime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="uEyeDotNet">
+      <HintPath>\\RobotNAS\Public\PackageReferences\uEyeDotNet.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Form1.cs">
