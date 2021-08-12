@@ -222,6 +222,7 @@ namespace hiwinrobot_vision_positioning
 
         private void UpdateInfo(PointF nowPoint, PointF error)
         {
+
             labelInfu.Text = $"Now: {nowPoint.X},{nowPoint.Y}\r\n" +
                              $"Err: {error.X},{error.Y}";
         }
